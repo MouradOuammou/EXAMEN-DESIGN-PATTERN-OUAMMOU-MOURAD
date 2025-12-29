@@ -1,0 +1,68 @@
+\chapter{Annexes}
+
+\section{Structure des fichiers}
+
+\begin{lstlisting}
+design-patterns-project/
+├── pom.xml
+├── src/
+│   ├── main/java/com/university/
+│   │   ├── app/
+│   │   ├── patterns/
+│   │   └── aspects/
+│   └── test/java/com/university/
+└── rapport/
+    ├── main.tex
+    └── chapters/
+        ├── 0-couverture.tex
+        ├── 1-introduction.tex
+        ├── 2-analyse.tex
+        ├── 3-conception.tex
+        ├── 4-implementation.tex
+        ├── 5-tests.tex
+        ├── 6-conclusion.tex
+        └── a-annexes.tex
+\end{lstlisting}
+
+\section{Commandes Maven utiles}
+
+\begin{lstlisting}[language=bash]
+# Compiler le projet
+mvn clean compile
+
+# Exécuter les tests
+mvn test
+
+# Lancer l'application
+mvn javafx:run
+
+# Générer le JAR
+mvn package
+\end{lstlisting}
+
+\section{Configuration AspectJ}
+
+AspectJ est configuré dans le pom.xml avec le plugin Maven aspectj-maven-plugin. Les aspects sont automatiquement compilés lors de la compilation du projet.
+
+\section{Dépendances}
+
+\begin{table}[H]
+    \centering
+    \caption{Dépendances Maven principales}
+    \label{tab:dependencies}
+    \begin{tabular}{|l|l|}
+    \hline
+    \textbf{Dépendance} & \textbf{Version} \\
+    \hline
+    javafx-controls & 21 \\
+    \hline
+    javafx-fxml & 21 \\
+    \hline
+    aspectjrt & 1.9.21 \\
+    \hline
+    junit-jupiter-api & 5.9.2 \\
+    \hline
+    slf4j-api & 2.0.7 \\
+    \hline
+    \end{tabular}
+\end{table}

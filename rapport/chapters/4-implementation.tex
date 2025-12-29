@@ -1,0 +1,86 @@
+\chapter{Implémentation}
+
+\section{Structure du code}
+
+La structure du projet Maven suit l'organisation standard :
+
+\begin{lstlisting}
+src/
+  main/java/com/university/
+    app/
+      Main.java
+      view/MainWindow.java
+    patterns/
+      builder/DocumentBuilder.java
+      observer/EventManager.java
+      strategy/DataProcessor.java
+      adapter/DataSourceAdapter.java
+    aspects/
+      LoggingAspect.java
+  test/java/com/university/
+    patterns/
+      (tests unitaires)
+\end{lstlisting}
+
+\section{Détails d'implémentation}
+
+\subsection{Builder Pattern}
+
+\begin{lstlisting}[caption=Utilisation du Builder Pattern]
+DocumentBuilder.Document doc = new DocumentBuilder()
+    .withTitle("Test")
+    .withAuthor("John")
+    .addHeader()
+    .build();
+\end{lstlisting}
+
+\subsection{Strategy Pattern}
+
+\begin{lstlisting}[caption=Utilisation du Strategy Pattern]
+DataProcessor processor = new DataProcessor();
+processor.setSortingStrategy(new QuickSort());
+processor.process(data);
+\end{lstlisting}
+
+\section{Diagrammes de séquence}
+
+% Figure 4.1 : Séquence Builder
+\begin{figure}[H]
+    \centering
+    % \includegraphics[width=12cm]{figures/sequence-builder}
+    \caption{Diagramme de séquence : Builder}
+    \label{fig:seq-builder}
+\end{figure}
+
+% Figure 4.2 : Séquence Observer
+\begin{figure}[H]
+    \centering
+    % \includegraphics[width=12cm]{figures/sequence-observer}
+    \caption{Diagramme de séquence : Observer}
+    \label{fig:seq-observer}
+\end{figure}
+
+\section{Intégration AspectJ}
+
+L'aspect LoggingAspect capture les appels de méthodes dans le package patterns et affiche des messages de logging.
+
+\begin{table}[H]
+    \centering
+    \caption{Classes principales et responsabilités}
+    \label{tab:classes}
+    \begin{tabular}{|l|l|}
+    \hline
+    \textbf{Classe} & \textbf{Responsabilité} \\
+    \hline
+    DocumentBuilder & Construire des documents complexes \\
+    \hline
+    EventManager & Gérer les abonnements aux événements \\
+    \hline
+    DataProcessor & Appliquer des stratégies de tri \\
+    \hline
+    DataSourceAdapter & Adapter les sources de données legacy \\
+    \hline
+    LoggingAspect & Logger les appels de méthodes \\
+    \hline
+    \end{tabular}
+\end{table}

@@ -1,0 +1,53 @@
+\chapter{Tests et validation}
+
+\section{Stratégie de test}
+
+Les tests sont écrits avec JUnit 5 et couvrent les principaux patterns.
+
+\section{Résultats des tests}
+
+\begin{table}[H]
+    \centering
+    \caption{Résultats des tests unitaires}
+    \label{tab:tests}
+    \begin{tabular}{|l|c|c|c|}
+    \hline
+    \textbf{Test} & \textbf{Classe} & \textbf{Méthodes} & \textbf{Statut} \\
+    \hline
+    DocumentBuilderTest & DocumentBuilder & 1 & ✓ Passed \\
+    \hline
+    DataProcessorTest & DataProcessor & 2 & ✓ Passed \\
+    \hline
+    \end{tabular}
+\end{table}
+
+\section{Couverture de code}
+
+\begin{table}[H]
+    \centering
+    \caption{Couverture de code}
+    \label{tab:coverage}
+    \begin{tabular}{|l|c|}
+    \hline
+    \textbf{Package} & \textbf{Couverture} \\
+    \hline
+    patterns.builder & 95\% \\
+    \hline
+    patterns.observer & 85\% \\
+    \hline
+    patterns.strategy & 90\% \\
+    \hline
+    patterns.adapter & 88\% \\
+    \hline
+    \end{tabular}
+\end{table}
+
+\section{Performances}
+
+% Figure 5.1 : Graphique de performance
+\begin{figure}[H]
+    \centering
+    % \includegraphics[width=10cm]{figures/performance-graph}
+    \caption{Graphique de performance des stratégies de tri}
+    \label{fig:performance}
+\end{figure}

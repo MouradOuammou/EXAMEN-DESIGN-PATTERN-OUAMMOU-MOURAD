@@ -1,0 +1,49 @@
+\documentclass[12pt,a4paper]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[french]{babel}
+\usepackage[left=3cm,right=2cm,top=3cm,bottom=2cm]{geometry}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{float}
+
+\lstset{
+    language=Java,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue},
+    commentstyle=\color{gray},
+    stringstyle=\color{red},
+    breaklines=true,
+    captionpos=b
+}
+
+\title{Projet Design Patterns}
+\author{Auteur}
+\date{\today}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{Design Patterns}
+\fancyhead[R]{\thepage}
+\fancyfoot[C]{}
+
+\begin{document}
+
+\input{chapters/0-couverture}
+\tableofcontents
+\listoffigures
+\listoftables
+
+\include{chapters/1-introduction}
+\include{chapters/2-analyse}
+\include{chapters/3-conception}
+\include{chapters/4-implementation}
+\include{chapters/5-tests}
+\include{chapters/6-conclusion}
+
+\appendix
+\include{chapters/a-annexes}
+
+\end{document}

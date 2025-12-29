@@ -1,0 +1,175 @@
+\chapter{Conception du système}
+
+\section{Architecture générale}
+
+Le système est organisé en plusieurs couches:
+
+\begin{itemize}
+    \item \textbf{Couche présentation} : Interface JavaFX avec contrôleurs
+    \item \textbf{Couche métier} : Patterns et services implémentés
+    \item \textbf{Couche aspects} : Logging transversal avec AspectJ
+\end{itemize}
+
+\section{Diagramme d'architecture}
+
+\begin{figure}[H]
+    \centering
+    \begin{verbatim}
+    ┌─────────────────────────────────────┐
+    │      Couche Présentation (UI)       │
+    │      (JavaFX MainWindow)             │
+    └──────────────┬──────────────────────┘
+                   │
+    ┌──────────────▼──────────────────────┐
+    │    Couche Métier (Controllers)      │
+    │ (Builder, Observer, Strategy, etc) │
+    └──────────────┬──────────────────────┘
+                   │
+    ┌──────────────▼──────────────────────┐
+    │      Couche Services                │
+    │ (Document, Event, Sorting Services) │
+    └──────────────┬──────────────────────┘
+                   │
+    ┌──────────────▼──────────────────────┐
+    │    Design Patterns & Aspects        │
+    │ (Builder, Observer, Strategy,       │
+    │  Adapter, AspectJ Logging)         │
+    └─────────────────────────────────────┘
+    \end{verbatim}
+    \caption{Architecture en couches du système}
+    \label{fig:architecture}
+\end{figure}
+
+\section{Design Patterns utilisés}
+
+\subsection{Builder Pattern}
+
+Le Builder Pattern est utilisé pour la construction de documents avec options flexibles.
+
+\begin{table}[H]
+    \centering
+    \caption{Structure du Builder Pattern}
+    \label{tab:builder-structure}
+    \begin{tabular}{|l|l|}
+    \hline
+    \textbf{Classe} & \textbf{Responsabilité} \\
+    \hline
+    DocumentBuilder & Constructeur fluide \\
+    \hline
+    DocumentBuilder.Document & Objet construit \\
+    \hline
+    \end{tabular}
+\end{table}
+
+\subsection{Observer Pattern}
+
+Le pattern Observer permet la notification d'événements à plusieurs listeners.
+
+\begin{verbatim}
+EventManager
+    ├─ subscribe(listener)
+    ├─ unsubscribe(listener)
+    └─ notify(event)
+       └─ EventListener.update()
+\end{verbatim}
+
+\subsection{Strategy Pattern}
+
+Le Strategy Pattern permet de sélectionner l'algorithme de tri à l'exécution.
+
+\begin{verbatim}
+DataProcessor
+    └─ setSortingStrategy(strategy)
+       ├─ BubbleSort.sort()
+       └─ QuickSort.sort()
+\end{verbatim}
+
+\subsection{Adapter Pattern}
+
+L'Adapter Pattern adapte l'interface legacy à l'interface moderne.
+
+\begin{verbatim}
+DataSourceAdapter implements ModernDataInterface
+    └─ getData()
+       └─ LegacyDataSource.retrieveData()
+\end{verbatim}
+
+\section{Tableau récapitulatif des patterns}
+
+\begin{table}[H]
+    \centering
+    \caption{Résumé complet des design patterns}
+    \label{tab:patterns-summary}
+    \begin{tabular}{|l|l|p{4cm}|l|}
+    \hline
+    \textbf{Pattern} & \textbf{Classe} & \textbf{Responsabilité} & \textbf{Type} \\
+    \hline
+    Builder & DocumentBuilder & Construction flexible & Créationnel \\
+    \hline
+    Observer & EventManager & Gestion d'événements & Comportement \\
+    \hline
+    Strategy & DataProcessor & Sélection d'algorithme & Comportement \\
+    \hline
+    Adapter & DataSourceAdapter & Adaptation d'interface & Structurel \\
+    \hline
+    AspectJ & LoggingAspect & Logging transversal & Structurel \\
+    \hline
+    \end{tabular}
+\end{table}
+
+\section{Services implémentés}
+
+\subsection{Service Layer}
+
+Les services fournissent une abstraction sur les patterns:
+
+\begin{table}[H]
+    \centering
+    \caption{Services implémentés}
+    \label{tab:services}
+    \begin{tabular}{|l|p{6cm}|}
+    \hline
+    \textbf{Service} & \textbf{Fonctionnalité} \\
+    \hline
+    DocumentService & Création et gestion de documents \\
+    \hline
+    EventService & Gestion centralisée des événements \\
+    \hline
+    SortingService & Tri avec mesure de performance \\
+    \hline
+    DataAdapterService & Adaptation de sources de données \\
+    \hline
+    PatternDemoService & Façade regroupant tous les services \\
+    \hline
+    \end{tabular}
+\end{table}
+
+\section{Context Singleton}
+
+\texttt{AppContext} est implémenté comme un singleton pour donner accès aux services depuis n'importe où dans l'application:
+
+\begin{lstlisting}[language=Java]
+AppContext context = AppContext.getInstance();
+PatternDemoService service = context.getPatternDemoService();
+\end{lstlisting}
+
+\section{Aspects AspectJ}
+
+L'aspect LoggingAspect capture les appels de méthodes et mesure les performances:
+
+\begin{table}[H]
+    \centering
+    \caption{Advices AspectJ implémentés}
+    \label{tab:aspects}
+    \begin{tabular}{|l|l|l|}
+    \hline
+    \textbf{Advice} & \textbf{Pointcut} & \textbf{Action} \\
+    \hline
+    @Before & patternMethods() & Logging d'entrée \\
+    \hline
+    @AfterReturning & patternMethods() & Logging de sortie \\
+    \hline
+    @Around & serviceMethods() & Mesure de temps \\
+    \hline
+    \end{tabular}
+\end{table}

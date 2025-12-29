@@ -1,0 +1,71 @@
+# ===============================
+# Java / Maven
+# ===============================
+target/
+*.class
+*.jar
+*.war
+*.ear
+*.log
+
+# Maven wrapper
+.mvn/wrapper/maven-wrapper.jar
+
+# ===============================
+# IDEs & Editors
+# ===============================
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# VS Code
+.vscode/
+
+# Eclipse
+.project
+.classpath
+.settings/
+
+# NetBeans
+nbproject/
+nbactions.xml
+
+# ===============================
+# OS files
+# ===============================
+.DS_Store
+Thumbs.db
+ehthumbs.db
+desktop.ini
+
+# ===============================
+# Logs & temp files
+# ===============================
+logs/
+*.log
+*.tmp
+*.swp
+*.bak
+
+# ===============================
+# Build & runtime
+# ===============================
+/target/
+/bin/
+/out/
+
+# ===============================
+# Environment & secrets
+# ===============================
+.env
+.env.*
+*.key
+*.pem
+
+# ===============================
+# Documentation build outputs
+# ============================

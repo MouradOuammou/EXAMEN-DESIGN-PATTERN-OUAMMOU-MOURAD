@@ -1,5 +1,4 @@
-@startuml Design_Patterns_Architecture
-
+    @startuml
 !theme vibrant
 
 title Diagramme de Classes UML\nArchitecture Design Patterns Java
@@ -87,40 +86,40 @@ class DocumentService {
 ' PATTERN 2: STRATEGY PATTERN
 ' ============================================
 
-interface SortingStrategy {
-    +sort(items: List<T>): void
+interface SortingStrategy <<interface>> {
+    +sort(items: List): void
 }
 
 class BubbleSort {
-    +sort(items: List<T>): void
+    +sort(items: List): void
 }
 
 class QuickSort {
-    -quickSort(items: List<T>, low: int, high: int): void
-    -partition(items: List<T>, low: int, high: int): int
-    +sort(items: List<T>): void
+    -quickSort(items: List, low: int, high: int): void
+    -partition(items: List, low: int, high: int): int
+    +sort(items: List): void
 }
 
 class DataProcessor {
     -sortingStrategy: SortingStrategy
     +DataProcessor()
     +setSortingStrategy(strategy: SortingStrategy): void
-    +process(data: List<T>): void
+    +process(data: List): void
 }
 
 class SortingService {
     -processor: DataProcessor
     +SortingService()
-    +sortWithStrategy(data: List<T>, strategyName: String): SortResult<T>
+    +sortWithStrategy(data: List, strategyName: String): SortResult
     -getStrategy(strategyName: String): SortingStrategy
 }
 
 class SortResult {
-    -sortedData: List<T>
+    -sortedData: List
     -strategy: String
     -durationNanos: long
-    +SortResult(sortedData: List<T>, strategy: String, durationNanos: long)
-    +getSortedData(): List<T>
+    +SortResult(sortedData: List, strategy: String, durationNanos: long)
+    +getSortedData(): List
     +getStrategy(): String
     +getDurationNanos(): long
     +getDurationMillis(): double
@@ -130,7 +129,7 @@ class SortResult {
 ' PATTERN 3: OBSERVER PATTERN
 ' ============================================
 
-interface EventListener {
+interface EventListener <<interface>> {
     +update(event: Event): void
 }
 
@@ -147,13 +146,13 @@ class EventManager {
     +notify(event: Event): void
 }
 
-class EventManager.Event {
+class Event {
     +data: String
     +Event(data: String)
 }
 
 class EventService {
-    -eventManagers: Map<String, EventManager>
+    -eventManagers: Map
     +EventService()
     +getEventManager(eventType: String): EventManager
     +subscribe(eventType: String, listener: EventListener): void
@@ -166,8 +165,8 @@ class EventService {
 ' PATTERN 4: ADAPTER PATTERN
 ' ============================================
 
-interface ModernDataInterface {
-    +getData(): List<String>
+interface ModernDataInterface <<interface>> {
+    +getData(): List
 }
 
 class LegacyDataSource {
@@ -177,7 +176,7 @@ class LegacyDataSource {
 class DataSourceAdapter {
     -legacyDataSource: LegacyDataSource
     +DataSourceAdapter(legacyDataSource: LegacyDataSource)
-    +getData(): List<String>
+    +getData(): List
 }
 
 class DataAdapterService {
@@ -185,17 +184,17 @@ class DataAdapterService {
     -adapter: DataSourceAdapter
     +DataAdapterService()
     +getLegacyData(): String[]
-    +getModernData(): List<String>
+    +getModernData(): List
     +getAdapter(): ModernDataInterface
     +formatLegacyData(data: String[]): String
-    +formatModernData(data: List<String>): String
+    +formatModernData(data: List): String
 }
 
 ' ============================================
 ' PATTERN 5: ASPECT-ORIENTED PROGRAMMING
 ' ============================================
 
-class LoggingAspect {
+class LoggingAspect <<aspect>> {
     +pointcut(): void
     +beforeAdvice(): void
     +afterAdvice(): void
@@ -230,7 +229,7 @@ class MainWindow {
 ' RELATIONS - BUILDER PATTERN
 ' ============================================
 
-DocumentBuilder --|> Document : builds
+DocumentBuilder --> Document : builds
 DocumentService "1" o-- "*" Document : manages
 DocumentService --> DocumentBuilder : uses
 
@@ -250,7 +249,7 @@ SortingService --> SortResult : returns
 
 EventListener <|.. LoggingListener : implements
 EventManager "1" --> "*" EventListener : notifies
-EventManager *-- EventManager.Event : contains
+EventManager *-- Event : contains
 EventService "1" *-- "*" EventManager : manages
 
 ' ============================================
@@ -329,6 +328,4 @@ note right of LoggingAspect
     Logging transversal
     sans modification du code
 end note
-
 @enduml
-

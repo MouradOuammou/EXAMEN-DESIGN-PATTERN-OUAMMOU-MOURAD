@@ -1,49 +1,1358 @@
-\documentclass[12pt,a4paper]{report}
-\usepackage[utf8]{inputenc}
+\documentclass[12pt, french, a4paper, oneside]{report}
+
+% ============================================
+% CONFIGURATION AVANCÉE DU DOCUMENT
+% ============================================
+\usepackage[T1]{fontenc}
 \usepackage[french]{babel}
-\usepackage[left=3cm,right=2cm,top=3cm,bottom=2cm]{geometry}
-\usepackage{graphicx}
+\usepackage[margin=2.5cm, top=3cm, bottom=3cm, headheight=15pt]{geometry}
 \usepackage{fancyhdr}
-\usepackage{hyperref}
+\usepackage{tikz}
+\usepackage{pgfplots}
 \usepackage{listings}
 \usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{setspace}
+\usepackage{booktabs}
+\usepackage{array}
 \usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{appendix}
+\usepackage{glossaries}
+\usepackage{cleveref}
+\usepackage{multirow}
+\usepackage{tabularx}
 
-\lstset{
+% Configuration avancée TikZ
+\usetikzlibrary{shapes,arrows,positioning,chains,calc,shapes.geometric}
+
+% Couleurs profesionnelles
+\definecolor{primary}{RGB}{25, 55, 109}
+\definecolor{secondary}{RGB}{230, 126, 34}
+\definecolor{accent}{RGB}{52, 152, 219}
+\definecolor{darkgray}{RGB}{52, 73, 94}
+\definecolor{lightgray}{RGB}{236, 240, 241}
+\definecolor{codebg}{RGB}{245, 245, 245}
+
+% Configuration listings avancée
+\lstdefinestyle{java}{
     language=Java,
     basicstyle=\ttfamily\small,
-    keywordstyle=\color{blue},
-    commentstyle=\color{gray},
-    stringstyle=\color{red},
+    keywordstyle=\color{primary}\bfseries,
+    commentstyle=\color{darkgray}\itshape,
+    stringstyle=\color{secondary},
+    numberstyle=\tiny\color{lightgray},
     breaklines=true,
-    captionpos=b
+    breakatwhitespace=true,
+    tabsize=4,
+    numbers=left,
+    numbersep=10pt,
+    backgroundcolor=\color{codebg},
+    frame=single,
+    framerule=1pt,
+    captionpos=b,
+    xleftmargin=20pt,
+    framexleftmargin=15pt,
+    framexrightmargin=5pt,
+    rulecolor=\color{darkgray},
+    morekeywords={override, interface, abstract, synchronized, volatile},
 }
 
-\title{Projet Design Patterns}
-\author{Auteur}
-\date{\today}
+\lstset{style=java}
 
+% Configuration en-têtes/pieds
 \pagestyle{fancy}
 \fancyhf{}
-\fancyhead[L]{Design Patterns}
-\fancyhead[R]{\thepage}
-\fancyfoot[C]{}
+\fancyhead[L]{\small\textbf{EXAMEN DESIGN PATTERN}}
+\fancyhead[R]{\small OUAMMOU Mourad}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{1pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{primary}\leaders\hrule height \headrulewidth\hfill}}
 
+% Interligne
+\setstretch{1.5}
+
+% Hyperliens
+\hypersetup{
+    colorlinks=true,
+    linkcolor=primary,
+    urlcolor=accent,
+    citecolor=secondary
+}
+
+% ============================================
+% TITRE ET MÉTADONNÉES
+% ============================================
+\title{
+    \vspace{-1cm}
+    {\color{primary}\rule{\textwidth}{2pt}} \\
+    \vspace{0.5cm}
+    {\Huge\bfseries Conception et Implémentation d'une} \\
+    {\Huge\bfseries Application Distribuée Orientée Agents} \\
+    \vspace{0.3cm}
+    {\Large\itshape Intégration des Design Patterns, AOP et JavaFX} \\
+    \vspace{0.5cm}
+    {\color{primary}\rule{\textwidth}{2pt}}
+}
+
+\author{
+    \textbf{OUAMMOU Mourad} \\
+    Filière GLSID \\
+}
+
+\date{\today}
+
+% ============================================
+% DOCUMENT
+% ============================================
 \begin{document}
 
-\input{chapters/0-couverture}
-\tableofcontents
-\listoffigures
-\listoftables
+    % PAGE DE GARDE PROFESSIONNELLE
+    \begin{titlepage}
+        \begin{center}
+            \vspace*{0.5cm}
 
-\include{chapters/1-introduction}
-\include{chapters/2-analyse}
-\include{chapters/3-conception}
-\include{chapters/4-implementation}
-\include{chapters/5-tests}
-\include{chapters/6-conclusion}
+            {\normalsize Filière : Génie Logiciel et Systèmes Intelligents Distribués}
 
-\appendix
-\include{chapters/a-annexes}
+            \vspace{3cm}
+
+            {\color{primary}\rule{0.8\textwidth}{3pt}}
+
+            \vspace{1cm}
+
+            {\Huge\bfseries RAPPORT TECHNIQUE} \\
+            \vspace{0.5cm}
+            {\Large\itshape Conception et Implémentation d'une Application} \\
+            {\Large\itshape de Gestion de Conteneurs d'Agents}
+
+            \vspace{1cm}
+
+            {\color{primary}\rule{0.8\textwidth}{3pt}}
+
+            \vspace{2.5cm}
+
+            \begin{tabular}{|l|l|}
+                \hline
+                \textbf{Étudiant} & OUAMMOU Mourad \\
+                \hline
+                \textbf{Examen} & Design Pattern \\
+                \hline
+                \textbf{Date de Remise} & \today \\
+                \hline
+            \end{tabular}
+
+            \vfill
+            \newpage
+            \begin{minipage}{0.75\textwidth}
+                \centering
+                {\large\bfseries Résumé Exécutif}
+
+                \vspace{0.5cm}
+
+                \itshape Ce rapport présente la conception et l'implémentation d'une
+                architecture distribuée  pour la gestion de conteneurs d'agents
+                . Le projet intègre  les patterns de conception
+                éprouvés (Builder, Observer, Strategy, Singleton, Adapter, MVC), la programmation
+                orientée aspect (AOP) pour les préoccupations transversales, et une interface
+                graphique  en JavaFX  et le respect des principes SOLID.
+            \end{minipage}
+
+            \vfill
+
+            {\small\color{darkgray}\today}
+        \end{center}
+    \end{titlepage}
+
+
+    % TABLE DES MATIÈRES
+    \tableofcontents
+    \newpage
+
+    % ============================================
+    % CHAPITRE 1 : INTRODUCTION ET CONTEXTE
+    % ============================================
+    \chapter{Introduction et Contexte}
+
+    \section{Contexte du Projet}
+
+    Le développement d'applications distribuées  requiert une architecture
+    fondée sur des patterns éprouvés. Ce projet s'inscrit dans une démarche
+    des principes d'architecture logicielle, en particulier :
+
+    \begin{enumerate}
+        \item L'application pragmatique des design patterns à un domaine métier concret
+        \item L'intégration de la programmation orientée aspect pour gérer les préoccupations transversales
+        \item La conception d'interfaces utilisateur  via le pattern MVC
+        \item La validation architecturale via des tests unitaires
+    \end{enumerate}
+
+    \subsection{Domaine Métier}
+
+    Le système cible la gestion de conteneurs d'agents intelligents, avec les
+    fonctionnalités clés suivantes :
+
+    \begin{itemize}
+        \item \textbf{Gestion d'Agents} : Création, modification, suppression d'entités autonomes
+        \item \textbf{Transactions} : Enregistrement et suivi des opérations
+        \item \textbf{Notifications} : Système événementiel avec stratégies modulables
+        \item \textbf{Audit} : Traçabilité complète via les aspects AOP
+    \end{itemize}
+
+    \section{Objectifs Spécifiques}
+
+    \begin{enumerate}
+        \item \textbf{Conception Architecturale} : Définir une architecture multicouches conforme aux standards
+        \item \textbf{Patterns de Conception} : Implémenter 6 patterns fondamentaux (Builder, Observer, Strategy, Singleton, Adapter, MVC)
+        \item \textbf{Aspects Transversaux} : Gérer logging, caching et sécurité via AOP
+        \item \textbf{Interface Graphique} : Développer une IHM JavaFX professionnelle et réactive
+        \item \textbf{Validation} : Tester exhaustivement tous les composants via JUnit
+    \end{enumerate}
+
+    \section{Périmètre et Contraintes}
+
+    \subsection{Périmètre Fonctionnel}
+
+    \begin{itemize}
+        \item Gestion  du cycle de vie des agents
+        \item Support  de notification
+        \item Interface graphique MVVM/MVC complète
+        \item Tests unitaires)
+    \end{itemize}
+
+    \subsection{Contraintes Techniques}
+
+    \begin{itemize}
+        \item Langage : Java
+        \item Framework : JavaFX 17+
+        \item Paradigme : Orienté Objet avec patterns
+        \item Architecture : Multicouches avec séparation des responsabilités
+    \end{itemize}
+
+    % ============================================
+    % CHAPITRE 2 : ANALYSE ET CONCEPTION
+    % ============================================
+    \chapter{Analyse et Conception Architecturale}
+
+    \section{Modèle de Domaine}
+
+    \subsection{Entités Principales}
+
+    Le système repose sur trois entités fondamentales illustrées en  :
+
+    \begin{figure}[H]
+        \centering
+        \resizebox{\textwidth}{!}{%
+            \begin{tikzpicture}[
+                class/.style={
+                    rectangle,
+                    draw=black,
+                    rounded corners,
+                    text width=4.5cm,
+                    minimum height=1cm,
+                    align=left,
+                    font=\small
+                },
+                node distance=3.5cm
+            ]
+
+% ===== Agent =====
+                \node[class] (Agent) {
+                    \textbf{Agent}\\\hline
+                    - id : UUID\\
+                    - nom : String\\
+                    - solde : BigDecimal\\
+                    - transactions : List<Transaction>\\
+                    - dateCreation : LocalDate\\
+                    \hline
+                    + getNom() : String\\
+                    + getSolde() : BigDecimal\\
+                    + addTransaction(t)\\
+                    + getTransactions()
+                };
+
+% ===== Transaction =====
+                \node[class, right=of Agent] (Transaction) {
+                    \textbf{Transaction}\\\hline
+                    - id : UUID\\
+                    - montant : BigDecimal\\
+                    - type : TypeTransaction\\
+                    - dateExecution : LocalDate\\
+                    - reference : String\\
+                    \hline
+                    + getId() : UUID\\
+                    + getMontant() : BigDecimal\\
+                    + getType() : TypeTransaction\\
+                    + validate() : boolean
+                };
+
+% ===== AgentContainer =====
+                \node[class, below=3cm of Agent] (Container) {
+                    \textbf{AgentContainer}\\
+                    \textit{(Singleton)}\\\hline
+                    - instance : AgentContainer\\
+                    - agents : Map<String, Agent>\\
+                    \hline
+                    + getInstance() : AgentContainer\\
+                    + addAgent(a : Agent)\\
+                    + getAgent(id : String) : Agent\\
+                    + getAllAgents() : Collection\\
+                    + removeAgent(id : String)
+                };
+
+% ===== Relations =====
+                \draw[->, thick] (Agent) -- node[above]{possède} (Transaction);
+                \draw[->, thick] (Container) -- node[left]{gère} (Agent);
+
+            \end{tikzpicture}
+        }
+        \caption{Diagramme UML du modèle de domaine}
+        \label{fig:domaine-uml}
+    \end{figure}
+
+    \subsection{Description des Entités}
+
+    \paragraph{Agent}
+    Représente une entité autonome dotée d'un solde et d'un historique transactionnel.
+    Identifiée de manière unique par un UUID et caractérisée par un nom.
+
+    \paragraph{Transaction}
+    Enregistre les opérations associées à un agent. Chaque transaction est immuable après
+    création et possède un type (ACHAT, VENTE, TRANSFERT).
+
+    \paragraph{AgentContainer}
+    Conteneur singleton gérant l'ensemble des agents actifs. Garantit l'unicité de l'instance
+    et l'accès thread-safe aux agents.
+
+    \section{Architecture Générale}
+
+    \subsection{Architecture en Couches}
+
+    Le système adopte une architecture multicouches conforme aux standards d'entreprise :
+
+    \begin{figure}[H]
+        \centering
+        \begin{tikzpicture}[
+            layer/.style={rectangle, draw=black!75, fill=accent!10, minimum height=1.2cm,
+            minimum width=8cm, text centered},
+            arrow/.style={->, thick, draw=primary}
+        ]
+
+            \node[layer, fill=secondary!20] (presentation) at (0, 6)
+                {\large \textbf{Couche Présentation} \\ JavaFX, MVC, DTOs};
+
+            \node[layer, fill=accent!20] (business) at (0, 4)
+                {\large \textbf{Couche Métier} \\ Patterns, Logique applicative};
+
+            \node[layer, fill=primary!20] (persistence) at (0, 2)
+                {\large \textbf{Couche Persistance} \\ Modèle de domaine, Repositories};
+
+            \node[layer, fill=secondary!20] (aspects) at (0, 0)
+                {\large \textbf{Couche Transversale} \\ AOP, Logging, Caching, Sécurité};
+
+            \draw[arrow] (presentation) -- (business);
+            \draw[arrow] (business) -- (persistence);
+            \draw[arrow] (aspects) -- (business);
+            \draw[arrow] (aspects) -- (persistence);
+
+        \end{tikzpicture}
+        \caption{Architecture en couches du système}
+        \label{fig:architecture-layers}
+    \end{figure}
+
+    \subsection{Description des Couches}
+
+    \paragraph{Couche Présentation}
+    Responsable de l'interaction utilisateur via JavaFX. Suit le pattern MVC strict avec
+    séparation nette entre views (FXML), controllers et models (DTOs). Insensible à la
+    logique métier complexe.
+
+    \paragraph{Couche Métier}
+    Implémente tous les patterns de conception et la logique applicative. Orchestrate
+    les interactions entre domaines. Interface clairement définie avec les couches
+    supérieures et inférieures.
+
+    \paragraph{Couche Persistance}
+    Gère les entités du domaine et leurs relations. Offre une interface de repositories
+    pour l'accès aux données. Peut être remplacée par une implémentation JPA/Hibernate.
+
+    \paragraph{Couche Transversale (AOP)}
+    Intercepte les appels de méthodes pour implémenter logging, caching et sécurité.
+    Décorrélée du code applicatif métier.
+
+    % ============================================
+    % CHAPITRE 3 : DESIGN PATTERNS - IMPLÉMENTATION
+    % ============================================
+    \chapter{Implémentation Rigoureuse des Design Patterns}
+
+    \section{Pattern Builder - Construction Flexible}
+
+    Le pattern Builder résout le problème de création complexe d'objets avec nombreux paramètres
+    optionnels. Particulièrement approprié pour les transactions.
+
+    \subsubsection{Motivation}
+
+    Les transactions possèdent de nombreuses propriétés optionnelles et validations complexes.
+    Le pattern Builder permet une construction flide et validée.
+
+    \begin{lstlisting}
+		public final class Transaction {
+			private final UUID id;
+			private final String reference;
+			private final BigDecimal montant;
+			private final TypeTransaction type;
+			private final LocalDate dateExecution;
+			private final String description;
+			private final Map<String, String> metadata;
+
+			// Constructeur privé - accès uniquement par Builder
+			private Transaction(TransactionBuilder builder) {
+				this.id = builder.id != null ? builder.id : UUID.randomUUID();
+				this.reference = Objects.requireNonNull(builder.reference);
+				this.montant = Objects.requireNonNull(builder.montant);
+				this.type = Objects.requireNonNull(builder.type);
+				this.dateExecution = builder.dateExecution != null ?
+				builder.dateExecution : LocalDate.now();
+				this.description = builder.description;
+				this.metadata = new HashMap<>(builder.metadata);
+			}
+
+			// Méthodes d'accès - immuables
+			public UUID getId() { return id; }
+			public BigDecimal getMontant() { return montant; }
+			public TypeTransaction getType() { return type; }
+
+			@Override
+			public String toString() {
+				return String.format(
+				"Transaction{id=%s, ref=%s, montant=%s, type=%s}",
+				id, reference, montant, type
+				);
+			}
+		}
+
+		public final class TransactionBuilder {
+			// Propriétés du builder
+			private UUID id;
+			private String reference;
+			private BigDecimal montant;
+			private TypeTransaction type;
+			private LocalDate dateExecution;
+			private String description;
+			private final Map<String, String> metadata = new HashMap<>();
+
+			public TransactionBuilder() {}
+
+			public TransactionBuilder withReference(String reference) {
+				this.reference = Objects.requireNonNull(reference, "Référence non-null");
+				return this;
+			}
+
+			public TransactionBuilder withMontant(BigDecimal montant) {
+				this.montant = Objects.requireNonNull(montant);
+				if (montant.compareTo(BigDecimal.ZERO) < 0) {
+					throw new IllegalArgumentException("Montant doit être positif");
+				}
+				return this;
+			}
+
+			public TransactionBuilder withType(TypeTransaction type) {
+				this.type = Objects.requireNonNull(type);
+				return this;
+			}
+
+			public TransactionBuilder withDateExecution(LocalDate date) {
+				this.dateExecution = date;
+				return this;
+			}
+
+			public TransactionBuilder withDescription(String description) {
+				this.description = description;
+				return this;
+			}
+
+			public TransactionBuilder withMetadata(String key, String value) {
+				this.metadata.put(key, value);
+				return this;
+			}
+
+			public Transaction build() {
+				// Validations du builder
+				if (this.reference == null || this.reference.trim().isEmpty()) {
+					throw new IllegalStateException("Référence obligatoire");
+				}
+				if (this.montant == null) {
+					throw new IllegalStateException("Montant obligatoire");
+				}
+				if (this.type == null) {
+					throw new IllegalStateException("Type obligatoire");
+				}
+
+				return new Transaction(this);
+			}
+		}
+
+		// Exemple d'utilisation
+		Transaction transaction = new TransactionBuilder()
+		.withReference("TXN-2024-001")
+		.withMontant(new BigDecimal("1500.00"))
+		.withType(TypeTransaction.VENTE)
+		.withDescription("Vente de produits électroniques")
+		.withMetadata("devise", "EUR")
+		.build();
+    \end{lstlisting}
+
+    \section{Pattern Observer - Système Événementiel}
+
+    Permet à plusieurs observateurs d'être notifiés des changements d'état sans couplage direct.
+
+    \begin{lstlisting}
+		public interface Observer {
+			void update(NotificationEvent event);
+		}
+
+		public class NotificationEvent {
+			private final String source;
+			private final LocalDateTime timestamp;
+			private final Map<String, Object> data;
+
+			public NotificationEvent(String source, Map<String, Object> data) {
+				this.source = source;
+				this.timestamp = LocalDateTime.now();
+				this.data = Collections.unmodifiableMap(data);
+			}
+
+			public String getSource() { return source; }
+			public LocalDateTime getTimestamp() { return timestamp; }
+			public Object getData(String key) { return data.get(key); }
+		}
+
+		public class NotificationManager {
+			private final List<Observer> observers =
+			Collections.synchronizedList(new ArrayList<>());
+
+			public void attach(Observer observer) {
+				Objects.requireNonNull(observer);
+				observers.add(observer);
+			}
+
+			public void detach(Observer observer) {
+				observers.remove(observer);
+			}
+
+			public void notifyObservers(NotificationEvent event) {
+				for (Observer observer : new ArrayList<>(observers)) {
+					observer.update(event);
+				}
+			}
+		}
+
+		public class Agent implements Observer {
+			// ... autres propriétés ...
+
+			@Override
+			public void update(NotificationEvent event) {
+				// Traitement de la notification
+				System.out.println(String.format(
+				"[AGENT %s] Notification reçue: %s",
+				this.nom,
+				event.getSource()
+				));
+			}
+		}
+    \end{lstlisting}
+
+    \section{Pattern Strategy - Logique Polymorphe}
+
+    Encapsule les algorithmes alternatifs pour traiter les notifications.
+
+    \begin{lstlisting}
+		public interface NotificationStrategy {
+			void process(Transaction transaction, Agent agent);
+		}
+
+		public class DefaultStrategy implements NotificationStrategy {
+			@Override
+			public void process(Transaction t, Agent a) {
+				System.out.println(String.format(
+				"Transaction %s: Type=%s, Montant=%s, Agent=%s",
+				t.getId(),
+				t.getType(),
+				t.getMontant(),
+				a.getNom()
+				));
+			}
+		}
+
+		public class ScoringStrategy implements NotificationStrategy {
+			private static final BigDecimal SCORING_MULTIPLIER = new BigDecimal("1.2");
+
+			@Override
+			public void process(Transaction t, Agent a) {
+				BigDecimal bonus = t.getMontant().multiply(SCORING_MULTIPLIER);
+
+				if (TypeTransaction.VENTE == t.getType()) {
+					a.addSolde(bonus);
+				} else if (TypeTransaction.ACHAT == t.getType()) {
+					a.addSolde(bonus.negate());
+				}
+
+				System.out.println(String.format(
+				"Score appliqué: %s => Solde=%s",
+				a.getNom(),
+				a.getSolde()
+				));
+			}
+		}
+
+		public class HistoryStrategy implements NotificationStrategy {
+			private final List<String> history = new ArrayList<>();
+
+			@Override
+			public void process(Transaction t, Agent a) {
+				String entry = String.format(
+				"[%s] Agent: %s, Transaction: %s, Montant: %s",
+				LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_TIME),
+				a.getNom(),
+				t.getId(),
+				t.getMontant()
+				);
+				history.add(entry);
+			}
+
+			public List<String> getHistory() {
+				return new ArrayList<>(history);
+			}
+		}
+    \end{lstlisting}
+
+    \section{Pattern Singleton - Instance Unique}
+
+    Garantit une instance unique et globale du conteneur.
+
+    \begin{lstlisting}
+		public final class AgentContainer {
+			private static volatile AgentContainer instance;
+			private final Map<String, Agent> agents;
+			private final NotificationManager notificationManager;
+			private final ReadWriteLock lock = new ReentrantReadWriteLock();
+
+			private AgentContainer() {
+				this.agents = new ConcurrentHashMap<>();
+				this.notificationManager = new NotificationManager();
+			}
+
+			public static AgentContainer getInstance() {
+				if (instance == null) {
+					synchronized (AgentContainer.class) {
+						if (instance == null) {
+							instance = new AgentContainer();
+						}
+					}
+				}
+				return instance;
+			}
+
+			public void addAgent(Agent agent) {
+				lock.writeLock().lock();
+				try {
+					agents.put(agent.getNom(), agent);
+					notificationManager.attach(agent);
+				} finally {
+					lock.writeLock().unlock();
+				}
+			}
+
+			public Agent getAgent(String nom) {
+				lock.readLock().lock();
+				try {
+					return agents.get(nom);
+				} finally {
+					lock.readLock().unlock();
+				}
+			}
+
+			public Collection<Agent> getAllAgents() {
+				lock.readLock().lock();
+				try {
+					return new ArrayList<>(agents.values());
+				} finally {
+					lock.readLock().unlock();
+				}
+			}
+		}
+    \end{lstlisting}
+
+    \section{Pattern Adapter - Intégration de Systèmes Hérités}
+
+    Adapte des interfaces incompatibles à une interface standardisée.
+
+    \begin{lstlisting}
+		// Interface cible
+		public interface HDMIDisplay {
+			void displayAgent(Agent agent);
+		}
+
+		// Système légacier non-compatible
+		public class VGADisplay {
+			public void showAgentInfo(String name, double balance) {
+				System.out.println("VGA Display: " + name + " - Balance: " + balance);
+			}
+		}
+
+		// Adaptateur
+		public class VGAtoHDMIAdapter implements HDMIDisplay {
+			private final VGADisplay vgaDisplay;
+
+			public VGAtoHDMIAdapter(VGADisplay vgaDisplay) {
+				this.vgaDisplay = Objects.requireNonNull(vgaDisplay);
+			}
+
+			@Override
+			public void displayAgent(Agent agent) {
+				vgaDisplay.showAgentInfo(
+				agent.getNom(),
+				agent.getSolde().doubleValue()
+				);
+			}
+		}
+
+		// Utilisation uniforme
+		HDMIDisplay display = new VGAtoHDMIAdapter(new VGADisplay());
+		display.displayAgent(myAgent);
+    \end{lstlisting}
+
+    \section{Pattern MVC - Architecture Présentation}
+
+    \subsection{Séparation des Responsabilités}
+
+    Le pattern MVC structure l'interface utilisateur en trois composants :
+
+    \begin{figure}[H]
+        \centering
+        \begin{tikzpicture}[
+            rect/.style={
+                rectangle,
+                draw=black,
+                fill=gray!20, % accent!20 remplacé par gray!20
+                rounded corners,
+                text width=3.5cm,
+                align=center,
+                minimum height=1.2cm
+            },
+            node distance=5cm
+        ]
+
+% Nœuds
+            \node[rect] (model) {Model\\Données};
+            \node[rect, right=of model] (controller) {Controller\\Logique};
+            \node[rect, below=of controller] (view) {View\\Présentation};
+
+% Relations
+            \draw[<->, thick] (model) -- (controller);
+            \draw[<->, thick] (view) -- (controller);
+            \draw[->, thick, dashed] (model) -- (view);
+
+        \end{tikzpicture}
+        \caption{Pattern MVC – Interactions}
+    \end{figure}
+
+    \begin{lstlisting}
+		// MODEL - DTO pour la présentation
+		public class AgentDTO {
+			private final StringProperty nom;
+			private final DoubleProperty solde;
+			private final ObjectProperty<LocalDate> dateCreation;
+			private final IntegerProperty transactionCount;
+
+			public AgentDTO(String nom, BigDecimal solde,
+			LocalDate dateCreation, int count) {
+				this.nom = new SimpleStringProperty(nom);
+				this.solde = new SimpleDoubleProperty(solde.doubleValue());
+				this.dateCreation = new SimpleObjectProperty<>(dateCreation);
+				this.transactionCount = new SimpleIntegerProperty(count);
+			}
+
+			// Propriétés accessibles à la Vue
+			public StringProperty nomProperty() { return nom; }
+			public DoubleProperty soldeProperty() { return solde; }
+			public ObjectProperty<LocalDate> dateCreationProperty() {
+				return dateCreation;
+			}
+			public IntegerProperty transactionCountProperty() {
+				return transactionCount;
+			}
+
+			// Getters
+			public String getNom() { return nom.get(); }
+			public double getSolde() { return solde.get(); }
+			public LocalDate getDateCreation() { return dateCreation.get(); }
+			public int getTransactionCount() { return transactionCount.get(); }
+		}
+
+		// CONTROLLER - Logique de présentation
+		public class AgentManagerController implements Initializable {
+
+			@FXML
+			private TableView<AgentDTO> agentTable;
+
+			@FXML
+			private TableColumn<AgentDTO, String> nomColumn;
+
+			@FXML
+			private TableColumn<AgentDTO, Double> soldeColumn;
+
+			@FXML
+			private TableColumn<AgentDTO, LocalDate> dateColumn;
+
+			@FXML
+			private TableColumn<AgentDTO, Integer> countColumn;
+
+			@FXML
+			private TextArea statusArea;
+
+			private final AgentContainer container = AgentContainer.getInstance();
+			private final ObservableList<AgentDTO> agentData =
+			FXCollections.observableArrayList();
+
+			@Override
+			public void initialize(URL url, ResourceBundle rb) {
+				configureTableColumns();
+				refreshAgentList();
+			}
+
+			private void configureTableColumns() {
+				nomColumn.setCellValueFactory(new PropertyValueFactory<>("nom"));
+				soldeColumn.setCellValueFactory(new PropertyValueFactory<>("solde"));
+				dateColumn.setCellValueFactory(new PropertyValueFactory<>("dateCreation"));
+				countColumn.setCellValueFactory(new PropertyValueFactory<>("transactionCount"));
+
+				agentTable.setItems(agentData);
+			}
+
+			@FXML
+			private void handleAddAgent(ActionEvent event) {
+				TextInputDialog dialog = new TextInputDialog();
+				dialog.setTitle("Nouvel Agent");
+				dialog.setHeaderText("Créer un agent");
+				dialog.setContentText("Nom:");
+
+				Optional<String> result = dialog.showAndWait();
+				if (result.isPresent() && !result.get().trim().isEmpty()) {
+					Agent agent = new Agent(result.get());
+					container.addAgent(agent);
+					refreshAgentList();
+					updateStatus("Agent créé: " + result.get());
+				}
+			}
+
+			@FXML
+			private void handleAddTransaction(ActionEvent event) {
+				AgentDTO selected = agentTable.getSelectionModel().getSelectedItem();
+
+				if (selected == null) {
+					showWarning("Sélectionnez un agent d'abord");
+					return;
+				}
+
+				openTransactionDialog(selected.getNom());
+			}
+
+			private void refreshAgentList() {
+				agentData.clear();
+				for (Agent agent : container.getAllAgents()) {
+					agentData.add(new AgentDTO(
+					agent.getNom(),
+					agent.getSolde(),
+					agent.getDateCreation(),
+					agent.getTransactions().size()
+					));
+				}
+			}
+
+			private void updateStatus(String message) {
+				statusArea.appendText(String.format(
+				"[%s] %s\n",
+				LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_TIME),
+				message
+				));
+			}
+
+			private void showWarning(String message) {
+				Alert alert = new Alert(Alert.AlertType.WARNING);
+				alert.setTitle("Attention");
+				alert.setContentText(message);
+				alert.showAndWait();
+			}
+
+			private void openTransactionDialog(String agentName) {
+				// Implémentation du dialog de transaction
+			}
+		}
+    \end{lstlisting}
+
+    % ============================================
+    % CHAPITRE 4 : PROGRAMMATION ORIENTÉE ASPECT
+    % ============================================
+    \chapter{Programmation Orientée Aspect (AOP)}
+
+    \section{Concepts Fondamentaux AOP}
+
+    La programmation orientée aspect permet de factoriser les préoccupations transversales
+    (logging, caching, sécurité) sans polluer le code métier.
+
+    \section{Annotation de Journalisation @Log}
+
+    \begin{lstlisting}
+		@Retention(RetentionPolicy.RUNTIME)
+		@Target(ElementType.METHOD)
+		@Documented
+		public @interface Log {
+			String value() default "Method execution";
+			Level level() default Level.INFO;
+		}
+
+		@SuppressWarnings("deprecation")
+		public class LoggingAspect {
+			private static final Logger logger = LoggerFactory.getLogger(LoggingAspect.class);
+
+			@Pointcut("@annotation(Log)")
+			public void loggedMethods() {}
+
+			@Around("loggedMethods() && @annotation(log)")
+			public Object logMethodExecution(ProceedingJoinPoint joinPoint, Log log)
+			throws Throwable {
+
+				MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+				String methodName = signature.getMethod().getName();
+				String className = joinPoint.getTarget().getClass().getSimpleName();
+				Object[] args = joinPoint.getArgs();
+
+				long startTime = System.nanoTime();
+
+				logger.info(">>> Entering {}.{} with args: {}",
+				className, methodName, Arrays.toString(args));
+
+				try {
+					Object result = joinPoint.proceed();
+					long duration = System.nanoTime() - startTime;
+
+					logger.info("<<< Exiting {}.{} - Result: {} (Duration: {}ms)",
+					className, methodName, result, duration / 1_000_000);
+
+					return result;
+				} catch (Exception e) {
+					logger.error("!!! Exception in {}.{}: {}",
+					className, methodName, e.getMessage(), e);
+					throw e;
+				}
+			}
+		}
+    \end{lstlisting}
+
+    \section{Annotation de Cachage @Cachable}
+
+    \begin{lstlisting}
+		@Retention(RetentionPolicy.RUNTIME)
+		@Target(ElementType.METHOD)
+		@Documented
+		public @interface Cachable {
+			int durationSeconds() default 300;
+			boolean updateable() default false;
+		}
+
+		public class CachingAspect {
+			private static final Logger logger = LoggerFactory.getLogger(CachingAspect.class);
+			private final Map<String, CacheEntry> cache = new ConcurrentHashMap<>();
+
+			private static class CacheEntry {
+				final Object value;
+				final long expirationTime;
+
+				CacheEntry(Object value, long expirationTime) {
+					this.value = value;
+					this.expirationTime = expirationTime;
+				}
+
+				boolean isValid() {
+					return System.currentTimeMillis() < expirationTime;
+				}
+			}
+
+			@Pointcut("@annotation(cachable)")
+			public void cacheableMethods() {}
+
+			@Around("cacheableMethods() && @annotation(cachable)")
+			public Object cacheResult(ProceedingJoinPoint joinPoint, Cachable cachable)
+			throws Throwable {
+
+				String cacheKey = generateCacheKey(joinPoint);
+				CacheEntry entry = cache.get(cacheKey);
+
+				if (entry != null && entry.isValid()) {
+					logger.debug("Cache HIT for key: {}", cacheKey);
+					return entry.value;
+				}
+
+				logger.debug("Cache MISS for key: {}", cacheKey);
+				Object result = joinPoint.proceed();
+
+				long expirationTime = System.currentTimeMillis() +
+				(cachable.durationSeconds() * 1000);
+				cache.put(cacheKey, new CacheEntry(result, expirationTime));
+
+				return result;
+			}
+
+			private String generateCacheKey(ProceedingJoinPoint joinPoint) {
+				MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+				String methodName = signature.getMethod().getName();
+				Object[] args = joinPoint.getArgs();
+				return methodName + ":" + Arrays.toString(args);
+			}
+		}
+    \end{lstlisting}
+
+    \section{Annotation de Sécurité @SecuredBy}
+
+    \begin{lstlisting}
+		@Retention(RetentionPolicy.RUNTIME)
+		@Target(ElementType.METHOD)
+		@Documented
+		public @interface SecuredBy {
+			String[] roles();
+			String message() default "Access denied";
+		}
+
+		public class SecurityAspect {
+			private static final Logger logger = LoggerFactory.getLogger(SecurityAspect.class);
+
+			@Pointcut("@annotation(SecuredBy)")
+			public void securedMethods() {}
+
+			@Before("securedMethods() && @annotation(secured)")
+			public void checkSecurity(JoinPoint joinPoint, SecuredBy secured)
+			throws SecurityException {
+
+				String currentRole = getCurrentUserRole();
+				boolean hasAccess = Arrays.asList(secured.roles()).contains(currentRole);
+
+				if (!hasAccess) {
+					String methodName = joinPoint.getSignature().getName();
+					String errorMsg = String.format(
+					"Access denied for %s. Required roles: %s",
+					methodName,
+					Arrays.toString(secured.roles())
+					);
+					logger.warn(errorMsg);
+					throw new SecurityException(errorMsg);
+				}
+			}
+
+			private String getCurrentUserRole() {
+				// Implémentation récupérant le rôle courant
+				return "ADMIN";
+			}
+		}
+
+		// Exception personnalisée
+		public class SecurityException extends RuntimeException {
+			public SecurityException(String message) {
+				super(message);
+			}
+		}
+    \end{lstlisting}
+
+    % ============================================
+    % CHAPITRE 5 : TESTS ET VALIDATION
+    % ============================================
+    \chapter{Tests et Validation}
+
+    \section{Stratégie de Test}
+
+    \subsection{Niveaux de Test}
+
+    \begin{itemize}
+        \item \textbf{Tests Unitaires} : Validation des composants isolés
+        \item \textbf{Tests d'Intégration} : Vérification des interactions entre composants
+        \item \textbf{Tests de Bout en Bout} : Validation du flux complet
+    \end{itemize}
+
+    \section{Suite de Tests Unitaires}
+
+    \begin{lstlisting}
+		public class TransactionBuilderTest {
+
+			private TransactionBuilder builder;
+
+			@BeforeEach
+			void setUp() {
+				builder = new TransactionBuilder();
+			}
+
+			@Test
+			void testBuildValidTransaction() {
+				Transaction t = builder
+				.withReference("TEST-001")
+				.withMontant(new BigDecimal("500.00"))
+				.withType(TypeTransaction.VENTE)
+				.build();
+
+				assertNotNull(t.getId());
+				assertEquals(new BigDecimal("500.00"), t.getMontant());
+				assertEquals(TypeTransaction.VENTE, t.getType());
+			}
+
+			@Test
+			void testBuilderValidationMontant() {
+				builder.withReference("TEST-002")
+				.withType(TypeTransaction.ACHAT);
+
+				assertThrows(IllegalStateException.class, () -> builder.build(),
+				"Montant obligatoire");
+			}
+
+			@Test
+			void testBuilderValidationMontantNegatif() {
+				assertThrows(IllegalArgumentException.class, () ->
+				builder.withMontant(new BigDecimal("-100.00"))
+				);
+			}
+		}
+
+		public class AgentContainerTest {
+
+			@Test
+			void testSingletonInstance() {
+				AgentContainer c1 = AgentContainer.getInstance();
+				AgentContainer c2 = AgentContainer.getInstance();
+
+				assertSame(c1, c2, "Doit retourner la même instance");
+			}
+
+			@Test
+			void testAddAndRetrieveAgent() {
+				AgentContainer container = AgentContainer.getInstance();
+				Agent agent = new Agent("TestAgent");
+
+				container.addAgent(agent);
+				Agent retrieved = container.getAgent("TestAgent");
+
+				assertNotNull(retrieved);
+				assertEquals("TestAgent", retrieved.getNom());
+			}
+
+			@Test
+			void testGetAllAgents() {
+				AgentContainer container = AgentContainer.getInstance();
+				Agent agent1 = new Agent("Agent1");
+				Agent agent2 = new Agent("Agent2");
+
+				container.addAgent(agent1);
+				container.addAgent(agent2);
+
+				Collection<Agent> agents = container.getAllAgents();
+				assertEquals(2, agents.size());
+			}
+		}
+
+		public class AdapterPatternTest {
+
+			@Test
+			void testVGAtoHDMIAdapter() {
+				VGADisplay vga = new VGADisplay();
+				HDMIDisplay adapter = new VGAtoHDMIAdapter(vga);
+
+				Agent agent = new Agent("AdapterTestAgent");
+				agent.addSolde(new BigDecimal("1000.00"));
+
+				assertDoesNotThrow(() -> adapter.displayAgent(agent));
+			}
+		}
+
+		public class StrategyPatternTest {
+
+			@Test
+			void testDefaultStrategy() {
+				NotificationStrategy strategy = new DefaultStrategy();
+				Agent agent = new Agent("StrategyAgent");
+				Transaction transaction = createTestTransaction();
+
+				assertDoesNotThrow(() -> strategy.process(transaction, agent));
+			}
+
+			@Test
+			void testScoringStrategy() {
+				ScoringStrategy strategy = new ScoringStrategy();
+				Agent agent = new Agent("ScoringAgent");
+				Transaction transaction = new TransactionBuilder()
+				.withReference("SCORE-001")
+				.withMontant(new BigDecimal("100.00"))
+				.withType(TypeTransaction.VENTE)
+				.build();
+
+				double initialBalance = agent.getSolde().doubleValue();
+				strategy.process(transaction, agent);
+
+				assertTrue(agent.getSolde().doubleValue() > initialBalance);
+			}
+
+			private Transaction createTestTransaction() {
+				return new TransactionBuilder()
+				.withReference("TEST-TXN")
+				.withMontant(new BigDecimal("250.00"))
+				.withType(TypeTransaction.VENTE)
+				.build();
+			}
+		}
+    \end{lstlisting}
+
+    % ============================================
+    % CHAPITRE 6 : PATTERNS COMPLÉMENTAIRES
+    % ============================================
+    \chapter{Patterns Complémentaires}
+
+    \section{Pattern Factory}
+
+    Abstrait la création d'agents avec différentes configurations :
+
+    \begin{lstlisting}
+		public enum AgentType {
+			STANDARD("STANDARD"),
+			PREMIUM("PREMIUM"),
+			ENTERPRISE("ENTERPRISE");
+
+			private final String label;
+			AgentType(String label) { this.label = label; }
+			public String getLabel() { return label; }
+		}
+
+		public class AgentFactory {
+
+			public static Agent createAgent(AgentType type, String nom) {
+				switch (type) {
+					case STANDARD:
+					return new StandardAgent(nom);
+					case PREMIUM:
+					return new PremiumAgent(nom);
+					case ENTERPRISE:
+					return new EnterpriseAgent(nom);
+					default:
+					throw new IllegalArgumentException("Type inconnu: " + type);
+				}
+			}
+		}
+
+		public class StandardAgent extends Agent {
+			public StandardAgent(String nom) {
+				super(nom);
+			}
+		}
+
+		public class PremiumAgent extends Agent {
+			private static final BigDecimal BONUS_MULTIPLIER = new BigDecimal("1.1");
+
+			public PremiumAgent(String nom) {
+				super(nom);
+			}
+
+			@Override
+			public void addSolde(BigDecimal montant) {
+				super.addSolde(montant.multiply(BONUS_MULTIPLIER));
+			}
+		}
+    \end{lstlisting}
+
+    \section{Pattern Decorator}
+
+    Enrichit dynamiquement les comportements des agents :
+
+    \begin{lstlisting}
+		public abstract class AgentDecorator extends Agent {
+			protected Agent decoratedAgent;
+
+			public AgentDecorator(Agent agent, String nom) {
+				super(nom);
+				this.decoratedAgent = Objects.requireNonNull(agent);
+			}
+
+			@Override
+			public void addTransaction(Transaction transaction) {
+				decoratedAgent.addTransaction(transaction);
+			}
+
+			@Override
+			public BigDecimal getSolde() {
+				return decoratedAgent.getSolde();
+			}
+		}
+
+		public class VIPAgentDecorator extends AgentDecorator {
+			private static final BigDecimal VIP_BONUS = new BigDecimal("1.25");
+
+			public VIPAgentDecorator(Agent agent) {
+				super(agent, agent.getNom() + " (VIP)");
+			}
+
+			@Override
+			public void addTransaction(Transaction transaction) {
+				super.addTransaction(transaction);
+
+				BigDecimal bonus = transaction.getMontant()
+				.multiply(VIP_BONUS)
+				.subtract(transaction.getMontant());
+
+				System.out.println("Bonus VIP appliqué: " + bonus);
+			}
+		}
+    \end{lstlisting}
+
+    \section{Pattern Iterator}
+
+    Parcourt les collections d'agents et transactions :
+
+    \begin{lstlisting}
+		public interface AgentIterator {
+			boolean hasNext();
+			Agent next();
+		}
+
+		public class ContainerIterator implements AgentIterator {
+			private final List<Agent> agents;
+			private int currentIndex = 0;
+
+			public ContainerIterator(Collection<Agent> agents) {
+				this.agents = new ArrayList<>(agents);
+			}
+
+			@Override
+			public boolean hasNext() {
+				return currentIndex < agents.size();
+			}
+
+			@Override
+			public Agent next() {
+				if (!hasNext()) {
+					throw new NoSuchElementException();
+				}
+				return agents.get(currentIndex++);
+			}
+		}
+
+		// Utilisation
+		AgentIterator iterator = new ContainerIterator(container.getAllAgents());
+		while (iterator.hasNext()) {
+			Agent agent = iterator.next();
+			System.out.println("Agent: " + agent.getNom() + ", Solde: " + agent.getSolde());
+		}
+    \end{lstlisting}
+
+
+    \vfill
+
+    \textit{Rapport technique généré le \today{} pour la filière GLSID par OUAMMOU Mourad}
 
 \end{document}

@@ -1,0 +1,334 @@
+@startuml Design_Patterns_Architecture
+
+!theme vibrant
+
+title Diagramme de Classes UML\nArchitecture Design Patterns Java
+
+' ============================================
+' COUCHE PRINCIPALE
+' ============================================
+
+class Main {
+    {static} +main(args: String[]): void
+}
+
+class AppContext {
+    -{static} instance: AppContext
+    -patternDemoService: PatternDemoService
+    {static} +getInstance(): AppContext
+    +getPatternDemoService(): PatternDemoService
+}
+
+' ============================================
+' COUCHE SERVICE - FAÇADE
+' ============================================
+
+class PatternDemoService {
+    -documentService: DocumentService
+    -eventService: EventService
+    -sortingService: SortingService
+    -dataAdapterService: DataAdapterService
+    +PatternDemoService()
+    +getDocumentService(): DocumentService
+    +getEventService(): EventService
+    +getSortingService(): SortingService
+    +getDataAdapterService(): DataAdapterService
+    +getProjectInfo(): String
+}
+
+' ============================================
+' PATTERN 1: BUILDER PATTERN
+' ============================================
+
+class DocumentBuilder {
+    -title: String
+    -content: String
+    -author: String
+    -fontSize: int
+    -hasHeader: boolean
+    -hasFooter: boolean
+    +DocumentBuilder()
+    +withTitle(title: String): DocumentBuilder
+    +withContent(content: String): DocumentBuilder
+    +withAuthor(author: String): DocumentBuilder
+    +withFontSize(fontSize: int): DocumentBuilder
+    +addHeader(): DocumentBuilder
+    +addFooter(): DocumentBuilder
+    +build(): Document
+}
+
+class Document {
+    -title: String
+    -content: String
+    -author: String
+    -fontSize: int
+    -hasHeader: boolean
+    -hasFooter: boolean
+    +Document(title: String, content: String, author: String, fontSize: int, hasHeader: boolean, hasFooter: boolean)
+    +getTitle(): String
+    +getContent(): String
+    +getAuthor(): String
+    +getFontSize(): int
+    +hasHeader(): boolean
+    +hasFooter(): boolean
+    +toString(): String
+}
+
+class DocumentService {
+    -documents: List<Document>
+    +DocumentService()
+    +createDocument(title: String, author: String, fontSize: int, header: boolean, footer: boolean): Document
+    +getAllDocuments(): List<Document>
+    +deleteDocument(doc: Document): void
+    +getDocumentCount(): int
+}
+
+' ============================================
+' PATTERN 2: STRATEGY PATTERN
+' ============================================
+
+interface SortingStrategy {
+    +sort(items: List<T>): void
+}
+
+class BubbleSort {
+    +sort(items: List<T>): void
+}
+
+class QuickSort {
+    -quickSort(items: List<T>, low: int, high: int): void
+    -partition(items: List<T>, low: int, high: int): int
+    +sort(items: List<T>): void
+}
+
+class DataProcessor {
+    -sortingStrategy: SortingStrategy
+    +DataProcessor()
+    +setSortingStrategy(strategy: SortingStrategy): void
+    +process(data: List<T>): void
+}
+
+class SortingService {
+    -processor: DataProcessor
+    +SortingService()
+    +sortWithStrategy(data: List<T>, strategyName: String): SortResult<T>
+    -getStrategy(strategyName: String): SortingStrategy
+}
+
+class SortResult {
+    -sortedData: List<T>
+    -strategy: String
+    -durationNanos: long
+    +SortResult(sortedData: List<T>, strategy: String, durationNanos: long)
+    +getSortedData(): List<T>
+    +getStrategy(): String
+    +getDurationNanos(): long
+    +getDurationMillis(): double
+}
+
+' ============================================
+' PATTERN 3: OBSERVER PATTERN
+' ============================================
+
+interface EventListener {
+    +update(event: Event): void
+}
+
+class LoggingListener {
+    +update(event: Event): void
+}
+
+class EventManager {
+    -listeners: List<EventListener>
+    -eventType: String
+    +EventManager(eventType: String)
+    +subscribe(listener: EventListener): void
+    +unsubscribe(listener: EventListener): void
+    +notify(event: Event): void
+}
+
+class EventManager.Event {
+    +data: String
+    +Event(data: String)
+}
+
+class EventService {
+    -eventManagers: Map<String, EventManager>
+    +EventService()
+    +getEventManager(eventType: String): EventManager
+    +subscribe(eventType: String, listener: EventListener): void
+    +unsubscribe(eventType: String, listener: EventListener): void
+    +fireEvent(eventType: String, data: String): void
+    +registerEventType(eventType: String): void
+}
+
+' ============================================
+' PATTERN 4: ADAPTER PATTERN
+' ============================================
+
+interface ModernDataInterface {
+    +getData(): List<String>
+}
+
+class LegacyDataSource {
+    +retrieveData(): String[]
+}
+
+class DataSourceAdapter {
+    -legacyDataSource: LegacyDataSource
+    +DataSourceAdapter(legacyDataSource: LegacyDataSource)
+    +getData(): List<String>
+}
+
+class DataAdapterService {
+    -legacySource: LegacyDataSource
+    -adapter: DataSourceAdapter
+    +DataAdapterService()
+    +getLegacyData(): String[]
+    +getModernData(): List<String>
+    +getAdapter(): ModernDataInterface
+    +formatLegacyData(data: String[]): String
+    +formatModernData(data: List<String>): String
+}
+
+' ============================================
+' PATTERN 5: ASPECT-ORIENTED PROGRAMMING
+' ============================================
+
+class LoggingAspect {
+    +pointcut(): void
+    +beforeAdvice(): void
+    +afterAdvice(): void
+}
+
+' ============================================
+' CONTRÔLEURS
+' ============================================
+
+class BuilderController {
+    +handleBuilderDemo(): void
+}
+
+class StrategyController {
+    +handleStrategyDemo(): void
+}
+
+class ObserverController {
+    +handleObserverDemo(): void
+}
+
+class AdapterController {
+    +handleAdapterDemo(): void
+}
+
+class MainWindow {
+    +start(): void
+    +run(): void
+}
+
+' ============================================
+' RELATIONS - BUILDER PATTERN
+' ============================================
+
+DocumentBuilder --|> Document : builds
+DocumentService "1" o-- "*" Document : manages
+DocumentService --> DocumentBuilder : uses
+
+' ============================================
+' RELATIONS - STRATEGY PATTERN
+' ============================================
+
+SortingStrategy <|.. BubbleSort : implements
+SortingStrategy <|.. QuickSort : implements
+DataProcessor --> SortingStrategy : uses
+SortingService "1" *-- "1" DataProcessor : contains
+SortingService --> SortResult : returns
+
+' ============================================
+' RELATIONS - OBSERVER PATTERN
+' ============================================
+
+EventListener <|.. LoggingListener : implements
+EventManager "1" --> "*" EventListener : notifies
+EventManager *-- EventManager.Event : contains
+EventService "1" *-- "*" EventManager : manages
+
+' ============================================
+' RELATIONS - ADAPTER PATTERN
+' ============================================
+
+ModernDataInterface <|.. DataSourceAdapter : implements
+DataSourceAdapter --> LegacyDataSource : adapts
+DataAdapterService "1" *-- "1" LegacyDataSource : contains
+DataAdapterService "1" *-- "1" DataSourceAdapter : contains
+
+' ============================================
+' RELATIONS - INTÉGRATION GÉNÉRALE
+' ============================================
+
+Main --> AppContext : uses
+AppContext --> PatternDemoService : creates
+
+PatternDemoService "1" *-- "1" DocumentService : contains
+PatternDemoService "1" *-- "1" EventService : contains
+PatternDemoService "1" *-- "1" SortingService : contains
+PatternDemoService "1" *-- "1" DataAdapterService : contains
+
+BuilderController --> DocumentService : uses
+StrategyController --> SortingService : uses
+ObserverController --> EventService : uses
+AdapterController --> DataAdapterService : uses
+
+LoggingAspect ..> PatternDemoService : advices
+LoggingAspect ..> DocumentService : advices
+LoggingAspect ..> EventService : advices
+LoggingAspect ..> SortingService : advices
+LoggingAspect ..> DataAdapterService : advices
+
+MainWindow --> BuilderController : uses
+MainWindow --> StrategyController : uses
+MainWindow --> ObserverController : uses
+MainWindow --> AdapterController : uses
+
+' ============================================
+' LÉGENDES ET NOTES
+' ============================================
+
+note right of PatternDemoService
+    **Service Façade**
+    Point d'accès unique
+    aux différents services
+end note
+
+note right of DocumentBuilder
+    **Builder Pattern**
+    Construction flexible
+    via méthodes chaînées
+end note
+
+note right of SortingStrategy
+    **Strategy Pattern**
+    Interface pour
+    algorithmes interchangeables
+end note
+
+note right of EventManager
+    **Observer Pattern**
+    Gestion d'observateurs
+    et notifications
+end note
+
+note right of DataSourceAdapter
+    **Adapter Pattern**
+    Adaptation interface
+    héritage -> moderne
+end note
+
+note right of LoggingAspect
+    **Aspect Orientation**
+    Logging transversal
+    sans modification du code
+end note
+
+@enduml
+
